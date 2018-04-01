@@ -19,13 +19,27 @@ var cards = [
     '<li class="card"><i class="fa fa-paper-plane-o"></i></li>',
     '<li class="card"><i class="fa fa-cube"></i></li>'
 ];
-let open = [];//定义变量为open的空数组，存放状态为 open显示的卡片
+//定义显示变量为open的空数组，存放状态为 open显示的卡片
+let open = [];
+//定义步数变量为moves，并赋值0
 let moves = 0;
+//定义等级变量为stars，并赋值3
 let stars = 3;
+//定义时间变量为n，并赋值为0,总时间变量为timer
+let n = 0;
+let timer = null;
 
-function show(){
-    shuffle(cards).forEach(function (card) {     //使用shuffle(cards)对数组中每个元素进行洗牌
-        $('.deck').append(card);                 //将遍历的每个元素添加到html的deck类中
+
+var oTxt = document.getElementsByTagName("input")[0];
+var oStart = document.getElementsByTagName("input")[1]; 
+var oStop = document.getElementsByTagName("input")[2];
+var oReset = document.getElementsByTagName("input")[3];
+
+function show() {
+    //使用shuffle(cards)对数组中每个元素进行洗牌
+    shuffle(cards).forEach(function (card) {
+        //将遍历的每个元素添加到html的deck类中
+        $('.deck').append(card);
     });
 
 }
@@ -54,23 +68,44 @@ function shuffle(array) {
  *    + 增加移动计数器并将其显示在页面上（将这个功能放在你从这个函数中调用的另一个函数中）
  *    + 如果所有卡都匹配，则显示带有最终分数的消息（将这个功能放在你从这个函数中调用的另一个函数中）
  */
-
+//显示卡片的符号 showCard()
 function showCard() {
-    this.className = 'card open show'; //显示卡片的符号 showCard()
+    this.className = 'card open show'; 
 }
+//点击deck类中的每个li执行以下操作
+$('.deck').on('click', 'li', function () {
+    // debugger;
 
-$('.deck').on('click', 'li', function () {//点击deck类中的每个li执行以下操作
-    showCard.call(this);                  //显示所点击的this卡片
-    open.push(this);                      //添加进数组
+    // console.log(this, this.className)
+    //console.log(this.className.includes('open show'))
+    //console.log($(this).hasClass('open show'))
+    // if($(this).hasClass('open show') ||
+    //     ...) {
+    //         return;
+    //     }
+    
+    //检查卡片是否显示，显示则无法点击
+    if(this.className.includes('open show') === true ||
+       this.className.includes('match')){
+        return;
+    }
+    //显示所点击的this卡片
+    showCard.call(this);
+    //添加进数组
+    open.push(this);
     check();
 });
 $('div.restart').on('click', restart);
-
-
-function check() {           //检查卡片
+$('ul.deck').on('click', oStart);
+//检查卡片
+function check() {
+    //更新步数
     updateMoves();
+    //更新等级
+    updateStars();
+    //检查游戏是否赢了
     checkWin();
-    checkStars();
+    // checkStars();
 }
 
 function checkMatch() {     //检查对比卡片
@@ -85,15 +120,15 @@ function checkMatch() {     //检查对比卡片
                 card.className = 'card';
             })
             open.length = 0;
-        },500);
+        },800);
     }
 }
-//更新星级
+//更新等级
 function updateStars() {
     if (moves <= 16) {
         $('.stars .fa').addClass("fa-star");
         stars = 3;
-    } else if (moves >= 17 && moves <= 25) {
+    } else if (moves >= 17 && moves <= 21) {
         $('.stars li:last-child .fa').removeClass("fa-star");
         $('.stars li:last-child .fa').addClass("fa-star-o");
         stars = 2;
@@ -114,19 +149,47 @@ function updateMoves() {
     $('span.moves').text(String(moves));
 }
 function checkWin() {
-    if($('.card.match').length == 4){
-        if(confirm('again?')){
-            restart();
-        } else {
-            alert('bye.');
-        }
+    if ($('.card.match').length == 16) {
+        timer.stop();
+        $(".container").hide();
+        $(".win").show();
+        //if(confirm('again?')){
+        //    restart();
+        //} else {
+        //    alert('bye.');
+        //}
     }
 }
+//开始计时
+function oStart() {
+    clearInterval(timer);
+    timer = setInterval(function () {
+        n++;
+        let m = parseInt(n / 3600);
+        let s = parseInt(n / 60 % 60);
+        let M = parseInt(n % 60);
+        oTxt.value = toDub(m) + "：" + toDub(s) + "：" + toDub(M);
+    }, 1000 / 60);
+}
+//暂停并清空计时
+function oStop(){
+    clearInterval(timer);
+}
+//重置计时
+function oReset() {
+    oTxt.value = "00：00：00";
+    n = 0;
+}
+//计时器补零
+function toDub(){
+    return n < 10 ? "0" + n : "" + n;
+}
+
 //重新开始游戏
 function restart() {
     //清空所有卡片
     $('.deck li').remove();
-    //初始化星级
+    //初始化等级
     stars = 3;
     $('.stars i').removeClass("fa-star-o");
     $('.stars i').addClass("fa-star");
@@ -136,6 +199,7 @@ function restart() {
     $('span.moves').text(String(moves));
     //重新打乱并加载卡片
     show();
-    
-}
 
+}
+//初始化等级
+restart();

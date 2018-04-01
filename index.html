@@ -18,14 +18,14 @@
         </header>
 
         <section class="score-panel">
-            星级
+            等级
         	<ul class="stars">
-        		<li><i class="fa" aria-hidden=""></i></li>
-        		<li><i class="fa" aria-hidden=""></i></li>
-        		<li><i class="fa" aria-hidden=""></i></li>
+        		<li><i class="fa fa-star"></i></li>
+        		<li><i class="fa fa-star"></i></li>
+        		<li><i class="fa fa-star"></i></li>
         	</ul>
         	<span class="moves">0</span>步
-
+            <input id="mytime" class="time" type="text" value="00:00:00" readonly>
             <div class="restart">
         		<i class="fa fa-repeat"></i>重新开始
         	</div>
@@ -35,7 +35,23 @@
             
         </ul>
     </div>
-
+    <div class="win" style="display:none;">
+        <img src="img/win.png" alt="win" />
+        <h2>恭喜你，赢了</h2>
+        <section class="score-panel">
+            等级
+            <ul class="stars">
+                <li><i class="fa" aria-hidden=""></i></li>
+                <li><i class="fa" aria-hidden=""></i></li>
+                <li><i class="fa" aria-hidden=""></i></li>
+            </ul>
+            <span class="moves">0</span>步
+            <input id="mytime" class="time" type="text" value="00:00:00" readonly>
+        </section>
+        <div class="restart">
+            <button class="again">再来一局</button>
+        </div>
+    </div>
     <script src="js/app.js"></script>
 </body>
 </html>
