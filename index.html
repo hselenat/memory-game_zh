@@ -10,7 +10,7 @@
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
 
 </head>
-<body>
+<body onload="time_fun()">
 
     <div class="container">
         <header>
@@ -25,7 +25,7 @@
         		<li><i class="fa fa-star"></i></li>
         	</ul>
         	<span class="moves">0</span>步
-            <input id="mytime" class="time" type="text" value="00:00:00" readonly>
+            <span id="mytime" class="time">00:00:00</span>
             <div class="restart">
         		<i class="fa fa-repeat"></i>重新开始
         	</div>
@@ -46,10 +46,10 @@
                 <li><i class="fa" aria-hidden=""></i></li>
             </ul>
             <span class="moves">0</span>步
-            <input id="mytime" class="time" type="text" value="00:00:00" readonly>
+            <span id="usetime" class="time"></span>
         </section>
         <div class="restart">
-            <button class="again">再来一局</button>
+            <button class="again" onClick="document.location.reload()">再来一局</button>
         </div>
     </div>
     <script src="js/app.js"></script>

@@ -25,15 +25,14 @@ let open = [];
 let moves = 0;
 //定义等级变量为stars，并赋值3
 let stars = 3;
-//定义时间变量为n，并赋值为0,总时间变量为timer
-let n = 0;
-let timer = null;
+//定义时间变量为sec，并赋值为0
+let sec = 0;
 
 
-var oTxt = document.getElementsByTagName("input")[0];
-var oStart = document.getElementsByTagName("input")[1]; 
-var oStop = document.getElementsByTagName("input")[2];
-var oReset = document.getElementsByTagName("input")[3];
+// var oTxt = document.getElementsByTagName("input")[0];
+// var oStart = document.getElementsByTagName("input")[1]; 
+// var oStop = document.getElementsByTagName("input")[2];
+// var oReset = document.getElementsByTagName("input")[3];
 
 function show() {
     //使用shuffle(cards)对数组中每个元素进行洗牌
@@ -83,12 +82,12 @@ $('.deck').on('click', 'li', function () {
     //     ...) {
     //         return;
     //     }
-    
     //检查卡片是否显示，显示则无法点击
     if(this.className.includes('open show') === true ||
        this.className.includes('match')){
         return;
     }
+
     //显示所点击的this卡片
     showCard.call(this);
     //添加进数组
@@ -96,13 +95,14 @@ $('.deck').on('click', 'li', function () {
     check();
 });
 $('div.restart').on('click', restart);
-$('ul.deck').on('click', oStart);
 //检查卡片
 function check() {
     //更新步数
     updateMoves();
     //更新等级
     updateStars();
+    //开始计时
+
     //检查游戏是否赢了
     checkWin();
     // checkStars();
@@ -150,8 +150,8 @@ function updateMoves() {
 }
 function checkWin() {
     if ($('.card.match').length == 16) {
-        timer.stop();
         $(".container").hide();
+        $('#usetime').append($("#mytime").text());
         $(".win").show();
         //if(confirm('again?')){
         //    restart();
@@ -160,30 +160,25 @@ function checkWin() {
         //}
     }
 }
-//开始计时
-function oStart() {
-    clearInterval(timer);
-    timer = setInterval(function () {
-        n++;
-        let m = parseInt(n / 3600);
-        let s = parseInt(n / 60 % 60);
-        let M = parseInt(n % 60);
-        oTxt.value = toDub(m) + "：" + toDub(s) + "：" + toDub(M);
-    }, 1000 / 60);
+// //开始计时
+function two_char(n) { 
+    return n >= 10 ? n : "0" + n; 
+} 
+function time_fun() { 
+    setInterval(function () { 
+        sec++; 
+        var date = new Date(0, 0) 
+        date.setSeconds(sec); 
+        var h = date.getHours(), m = date.getMinutes(), s = date.getSeconds(); 
+        document.getElementById("mytime").innerText = two_char(h) + ":" + two_char(m) + ":" + two_char(s); 
+    }, 1000); 
+
 }
-//暂停并清空计时
-function oStop(){
-    clearInterval(timer);
-}
-//重置计时
-function oReset() {
-    oTxt.value = "00：00：00";
-    n = 0;
-}
-//计时器补零
-function toDub(){
-    return n < 10 ? "0" + n : "" + n;
-}
+
+//获取已使用的时间
+// const userTime = document.querySelector('#mytime');
+// userTime.textContent;
+
 
 //重新开始游戏
 function restart() {
@@ -196,6 +191,8 @@ function restart() {
     updateStars();
     //初始化步数
     moves = 0;
+    //重新计时
+    sec = 0-1;
     $('span.moves').text(String(moves));
     //重新打乱并加载卡片
     show();
